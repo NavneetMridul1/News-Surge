@@ -8,9 +8,15 @@ function reload() {
 }
 
 async function fetchNews(query) {
+  try {
     const res = await fetch(`${url}${query}&apiKey=${API_KEY}`);
     const data = await res.json();
+    if (!data.articles) throw new Error(data.message || "No articles");
     bindData(data.articles);
+  } catch (error) {
+    document.getElementById("cards-container").innerHTML = `<p style="padding: 1rem; color: red;">Error: ${error.message}</p>`;
+    console.error("API Error:", error);
+  }
 }
 
 function bindData(articles) {
